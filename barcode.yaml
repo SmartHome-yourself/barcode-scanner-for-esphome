@@ -1,0 +1,330 @@
+#substitutions:
+#  devicename: barcode
+#  friendly_name: Barcode Scanner
+
+#  # WLAN Zugangsdaten
+#  wifi_ssid: !secret wifi_ssid
+#  wifi_password: !secret wifi_password
+
+#  # ESPHome API Schlüssel
+#  api_encryption_key: "Rd9kYjTg0g6K25ROWgl13MMdvmWYAX+8UhsvOSEDiys="
+
+#  # Query ID für opentindb (https://opengtindb.org/api.php)
+#  rest_opentindb_queryid: "400000000"
+
+#  # I2C-Pins fürs Display
+#  display_i2c_sda: GPIO21
+#  display_i2c_scl: GPIO22
+
+#  # I2C-Adresse des OLED Displays
+#  ssd1306_i2c_address: "0x3C"
+
+#  # UART-Pins für den Barcode-Scanner
+#  uart_tx_pin: GPIO1
+#  uart_rx_pin: GPIO3
+
+#  # Pin des Buzzer/Beeper
+#  beeper_pin: GPIO16
+
+esp32:
+  board: wemos_d1_mini32
+
+# ----------------------------------
+# ----       CONFIG END         ----
+# ----------------------------------
+
+esphome:
+  name: ${devicename}
+  on_boot:
+    then:
+      - lambda: id(last_ean).publish_state("Scan Barcode");
+
+ota:
+
+api:
+  encryption:
+    key: ${api_encryption_key}
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+  ap:
+    ssid: ${friendly_name} Hotspot
+    password: ${wifi_password}
+
+captive_portal:
+
+logger:
+  level: WARN
+  baud_rate: 0
+
+# ---------------------------------------------
+
+globals:
+  - id: xpos_ean
+    type: int
+    initial_value: "0"
+  - id: xpos_brand
+    type: int
+    initial_value: "0"
+  - id: xpos_prod
+    type: int
+    initial_value: "0"
+
+text_sensor:
+  - platform: template
+    id: barcode_scanner
+    name: ${friendly_name} Sensor
+    on_value:
+      then:
+        - if:
+            condition:
+              - lambda: 'return id(barcode_scanner).state != "unknown";'
+            then:
+              - switch.turn_on: beeper
+              - delay: 50ms
+              - switch.turn_off: beeper
+              - script.execute: 
+                  id: getEanData
+                  ean: !lambda return x.c_str();
+              - delay: 500ms
+              - text_sensor.template.publish:
+                  id: barcode_scanner
+                  state: unknown
+
+  - platform: template
+    id: last_ean
+    name: ${friendly_name} EAN
+  - platform: template
+    id: last_brand
+    name: ${friendly_name} Brand
+  - platform: template
+    id: last_product
+    name: ${friendly_name} Product
+
+
+uart:
+  id: uart_bus
+  baud_rate: 9600
+  tx_pin: ${uart_tx_pin}
+  rx_pin: ${uart_rx_pin}
+  debug:
+    direction: BOTH
+    dummy_receiver: true
+    after:
+      delimiter: "\n"
+    sequence:
+      - lambda: UARTDebug::log_string(direction, bytes);
+      - text_sensor.template.publish:
+          id: barcode_scanner
+          state: !lambda |
+            std::string s(bytes.begin(), bytes.end());
+            return s;
+
+
+font:
+  - file: "_fonts/arial.ttf"
+    id: arial_font_18
+    size: 18
+  - file: "_fonts/arial.ttf"
+    id: arial_font
+    size: 20
+    glyphs:  |
+      ß!?"%()+*=,-_.:°ø0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÜÖ abcdefghijklmnopqrstuvwxyzäüö€@<>/
+
+i2c:
+  sda: ${display_i2c_sda}
+  scl: ${display_i2c_scl}
+  scan: false
+  frequency: 400kHz
+  id: i2c_bus
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: ${ssd1306_i2c_address}
+    update_interval: 250ms
+    lambda: |-
+      it.print(id(xpos_ean), 0, id(arial_font_18), id(last_ean).state.c_str());
+      it.print(id(xpos_brand), 19, id(arial_font), id(last_brand).state.c_str());
+      it.print(id(xpos_prod), 40, id(arial_font), id(last_product).state.c_str());
+
+      int x_start, y_start, height;
+      int brand_width, prod_width, ean_width;
+      it.get_text_bounds(0, 0, id(last_ean).state.c_str(), id(arial_font), TextAlign::TOP_LEFT, &x_start, &y_start, &ean_width, &height);
+      it.get_text_bounds(0, 0, id(last_brand).state.c_str(), id(arial_font), TextAlign::TOP_LEFT, &x_start, &y_start, &brand_width, &height);
+      it.get_text_bounds(0, 0, id(last_product).state.c_str(), id(arial_font), TextAlign::TOP_LEFT, &x_start, &y_start, &prod_width, &height);
+
+      if (id(xpos_ean) > (-1*ean_width)-30 && ean_width>128) {
+        id(xpos_ean) -= 10;
+      } else {
+        id(xpos_ean) = 0;
+      }
+
+      if (id(xpos_brand) > (-1*brand_width)-30 && brand_width>128) {
+        id(xpos_brand) -= 10;
+      } else {
+        id(xpos_brand) = 0;
+      }
+
+      int prod_len = strlen(id(last_product).state.c_str());
+      if (id(xpos_prod) > (-1*prod_width)-30 && prod_width>128) {
+        id(xpos_prod) -= 10;
+      } else {
+        id(xpos_prod) = 0;
+      }
+
+switch:
+  - platform: gpio
+    name: ${friendly_name} Buzzer
+    pin: ${beeper_pin}
+    id: beeper
+
+http_request:
+  useragent: esphome/device
+  timeout: 10s
+  id: http_request_data
+  
+script:
+  - id: getEanData
+    parameters:
+      ean: std::string
+    mode: restart
+    then:
+      - script.execute: clearProductData
+      - lambda: |-
+          ESP_LOGD("getEanData", "Scanned EAN: %s\n", ean);
+      - lambda: id(last_ean).publish_state(ean);
+      - script.execute: 
+          id: refreshProductNameOpenfoodfacts
+          ean: !lambda return ean.c_str();
+      - lambda: |-
+          ESP_LOGD("getEanData", "Openfoodfacts result: %s\n", id(last_product).state.c_str());
+      - delay: 500ms
+      - if:
+          condition:
+            text_sensor.state:
+              id: last_product
+              state: 'null'
+          then:
+            - script.execute: 
+                id: refreshProductNameOpenTin
+                ean: !lambda return ean.c_str();
+            - lambda: |-
+                ESP_LOGD("getEanData", "OpenTinDb result: %s\n", id(last_product).state.c_str());
+
+      - if:
+          condition:
+            text_sensor.state:
+              id: last_product
+              state: 'null'
+          then:
+              - switch.turn_on: beeper
+              - delay: 800ms
+              - switch.turn_off: beeper
+          else:
+              - switch.turn_on: beeper
+              - delay: 50ms
+              - switch.turn_off: beeper
+
+      - delay: 10s
+      - script.execute: clearProductData
+      - lambda: id(last_ean).publish_state("Scan Barcode");
+
+
+  - id: clearProductData
+    mode: restart
+    then: 
+      - lambda: id(last_ean).publish_state("");
+      - lambda: id(last_brand).publish_state("");
+      - lambda: id(last_product).publish_state("");
+      
+  - id: refreshProductNameOpenfoodfacts
+    mode: restart
+    parameters:
+      ean: std::string
+    then:
+      - http_request.get:
+          verify_ssl: false
+          headers:
+            Content-Type: application/json          
+          url: !lambda |-      
+            std::string url = "https://off:off@world.openfoodfacts.net/api/v2/search?code=" + ean + "&fields=brands,product_name,code";
+            ESP_LOGD("openFood", "API: %s\n", url.c_str());
+            return url;
+
+          on_response:
+            then:
+              - if:
+                  condition:
+                     lambda: |-
+                        return status_code == 200;
+                  then:              
+                    - lambda: |-
+                        char *ptr;
+                        ptr = (char*)id(http_request_data).get_string();
+                        ESP_LOGD("custom", "ptr: %s\n", ptr);
+
+                        json::parse_json(ptr, [](JsonObject root) {
+                          std::string jsonStr;
+                          id(last_brand).publish_state(root["products"][0]["brands"]);
+                          id(last_product).publish_state(root["products"][0]["product_name"]);
+                        });
+                  
+  - id: refreshProductNameOpenTin
+    mode: restart
+    parameters:
+      ean: std::string
+    then:
+      - http_request.get:
+          verify_ssl: false
+          url: !lambda |-
+                  return (std::string) "https://opengtindb.org/?ean=" + ean + "&cmd=query&queryid=${rest_opentindb_queryid}";
+
+          on_response:
+            then:
+              - lambda: |-
+                  char delimiter[] = "\n";
+                  char *ptr;
+
+                  ptr = strtok((char*)id(http_request_data).get_string(), delimiter);
+                  ESP_LOGD("opengtin", "ptr: %s\n", ptr);
+
+                  int i = 0;
+                  char *name_line = NULL;
+                  char *vendor_line = NULL;
+
+                  while(ptr != NULL) {
+                    if(i == 4){
+                      name_line = ptr;
+                    }
+                    if(i == 5){
+                      vendor_line = ptr;
+                    }                    
+                    ptr = strtok(NULL, delimiter);
+                    i++;
+                  }
+
+                  ptr = strtok(name_line, {"="});
+                  i=0;
+                  while(ptr != NULL) {
+                    if(i == 1){
+                      ESP_LOGD("opengtin", "Name: %s\n", ptr);
+                      id(last_product).publish_state(ptr);
+                    }                    
+                    ptr = strtok(NULL, delimiter);
+                    i++;
+                  }
+
+                  ptr = strtok(vendor_line, {"="});
+                  i=0;
+                  while(ptr != NULL) {
+                    if(i == 1){
+                      ESP_LOGD("opengtin", "Firma: %s\n", ptr);
+                      id(last_brand).publish_state(ptr);
+                    }                    
+                    ptr = strtok(NULL, delimiter);
+                    i++;
+                  }
+
+                      
