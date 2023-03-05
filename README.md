@@ -1,5 +1,17 @@
 # barcode-scanner-for-esphome
 
+#
+### Benötigte Bauteile
+**D1 Mini-ESP32:** https://amzn.to/3kLEt1s *  
+**Barcode Scanner GM60:** https://amzn.to/3mq6vA2 *  
+**Active Piezo Buzzer:** https://amzn.to/3Zps3eM *  
+**0,96" OLED Display:** https://amzn.to/3kH2Ld7 *  
+#    
+  
+### ESPHome Code
+Tragt einfach den folgenden Code in euer ESPHome Projekt ein und passt die Substitution-Werte an. 
+Wer ein anderes Board als einen D1 Mini32 verwenden möchte, kann hier auch entsprechend das Board anpassen.
+
 ```
 substitutions:
   devicename: barcode-ext
@@ -36,3 +48,7 @@ esp32:
 packages:
   barcode: github://SmartHome-yourself/barcode-scanner-for-esphome/barcode.yaml@main
 ```
+
+
+*\* Bei allen Amazon Links handelt es sich um Affiliate-Links. Heißt für jeden Kauf über die Links erhalte ich eine kleine Provision. Ihr bezahlt natürlich weiterhin den selben Preis wie sonst auch. 
+Vielen Dank für eure Unterstützung!*
