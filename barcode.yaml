@@ -43,15 +43,10 @@ dashboard_import:
 ota:
 
 api:
-  encryption:
-    key: ${api_encryption_key}
 
 wifi:
-  ssid: ${wifi_ssid}
-  password: ${wifi_password}
   ap:
-    ssid: ${friendly_name} Hotspot
-    password: ${wifi_password}
+    password: "12345678"
 
 captive_portal:
 
