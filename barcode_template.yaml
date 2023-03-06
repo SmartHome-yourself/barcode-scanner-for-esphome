@@ -1,13 +1,5 @@
 substitutions:
-  devicename: barcode
   friendly_name: Barcode Scanner
-
-  # WLAN Zugangsdaten
-  wifi_ssid: !secret wifi_ssid
-  wifi_password: !secret wifi_password
-
-  # ESPHome API Schlüssel
-  api_encryption_key: "Rd9kYjTg0g6K25ROWgl13MMdvmWYAX+8UhsvOSEDiys="
 
   # Query ID für opentindb (https://opengtindb.org/api.php)
   rest_opentindb_queryid: "400000000"
