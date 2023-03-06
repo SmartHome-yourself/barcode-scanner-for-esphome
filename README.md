@@ -14,7 +14,7 @@ Wer ein anderes Board als einen D1 Mini32 verwenden möchte, kann hier auch ents
 
 ```
 substitutions:
-  devicename: barcode-ext
+  devicename: barcode
   friendly_name: Barcode Scanner
 
   # WLAN Zugangsdaten
