@@ -35,9 +35,17 @@ esp32:
 
 esphome:
   name: ${devicename}
+  name_add_mac_suffix: true
+  project:
+    name: smarthomeyourself.barcodescanner
+    version: "1.0"
   on_boot:
     then:
       - lambda: id(last_ean).publish_state("Scan Barcode");
+
+dashboard_import:
+  package_import_url: github://SmartHome-yourself/barcode-scanner-for-esphome/barcode_template.yaml@main
+  import_full_config: false
 
 ota:
 
@@ -54,6 +62,9 @@ wifi:
 
 captive_portal:
 
+esp32_improv:
+  authorizer: none
+  
 logger:
   level: WARN
   baud_rate: 0
