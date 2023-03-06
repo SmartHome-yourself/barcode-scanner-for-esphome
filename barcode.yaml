@@ -27,7 +27,7 @@ esp32:
 # ----------------------------------
 
 esphome:
-  name: ${devicename}
+  name: "${devicename}"
   name_add_mac_suffix: true
   project:
     name: smarthomeyourself.barcodescanner
@@ -70,7 +70,7 @@ globals:
 text_sensor:
   - platform: template
     id: barcode_scanner
-    name: ${friendly_name} Sensor
+    name: "${friendly_name} Sensor"
     on_value:
       then:
         - if:
@@ -90,20 +90,20 @@ text_sensor:
 
   - platform: template
     id: last_ean
-    name: ${friendly_name} EAN
+    name: "${friendly_name} EAN"
   - platform: template
     id: last_brand
-    name: ${friendly_name} Brand
+    name: "${friendly_name} Brand"
   - platform: template
     id: last_product
-    name: ${friendly_name} Product
+    name: "${friendly_name} Product"
 
 
 uart:
   id: uart_bus
   baud_rate: 9600
-  tx_pin: ${uart_tx_pin}
-  rx_pin: ${uart_rx_pin}
+  tx_pin: "${uart_tx_pin}"
+  rx_pin: "${uart_rx_pin}"
   debug:
     direction: BOTH
     dummy_receiver: true
@@ -129,8 +129,8 @@ font:
       ß!?"%()+*=,-_.:°ø0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÜÖ abcdefghijklmnopqrstuvwxyzäüö€@<>/
 
 i2c:
-  sda: ${display_i2c_sda}
-  scl: ${display_i2c_scl}
+  sda: "${display_i2c_sda}"
+  scl: "${display_i2c_scl}"
   scan: false
   frequency: 400kHz
   id: i2c_bus
@@ -138,7 +138,7 @@ i2c:
 display:
   - platform: ssd1306_i2c
     model: "SSD1306 128x64"
-    address: ${ssd1306_i2c_address}
+    address: "${ssd1306_i2c_address}"
     update_interval: 250ms
     lambda: |-
       it.print(id(xpos_ean), 0, id(arial_font_18), id(last_ean).state.c_str());
@@ -172,8 +172,8 @@ display:
 
 switch:
   - platform: gpio
-    name: ${friendly_name} Buzzer
-    pin: ${beeper_pin}
+    name: "${friendly_name} Buzzer"
+    pin: "${beeper_pin}"
     id: beeper
 
 http_request:
