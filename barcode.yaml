@@ -37,8 +37,8 @@ esphome:
       - lambda: id(last_ean).publish_state("Scan Barcode");
 
 dashboard_import:
-  package_import_url: github://SmartHome-yourself/barcode-scanner-for-esphome/barcode_template.yaml@main
-  import_full_config: true
+  package_import_url: github://SmartHome-yourself/barcode-scanner-for-esphome/barcode.yaml@main
+  import_full_config: false
 
 ota:
 
