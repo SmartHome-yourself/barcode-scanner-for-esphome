@@ -1,6 +1,5 @@
 substitutions:
-  devicename: barcode
-  friendly_name: Barcode Scanner
+  friendly_name: "Barcode Scanner"
 
   # Query ID für opentindb (https://opengtindb.org/api.php)
   rest_opentindb_queryid: "400000000"
@@ -27,7 +26,6 @@ esp32:
 # ----------------------------------
 
 esphome:
-  name: "${devicename}"
   name_add_mac_suffix: true
   project:
     name: smarthomeyourself.barcodescanner
