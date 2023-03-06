@@ -45,7 +45,7 @@ esphome:
 
 dashboard_import:
   package_import_url: github://SmartHome-yourself/barcode-scanner-for-esphome/barcode_template.yaml@main
-#  import_full_config: true
+  import_full_config: true
 
 ota:
 
