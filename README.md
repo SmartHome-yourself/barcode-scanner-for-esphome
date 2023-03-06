@@ -14,15 +14,8 @@ Wer ein anderes Board als einen D1 Mini32 verwenden möchte, kann hier auch ents
 
 ```
 substitutions:
-  devicename: barcode
-  friendly_name: Barcode Scanner
-
-  # WLAN Zugangsdaten
-  wifi_ssid: !secret wifi_ssid
-  wifi_password: !secret wifi_password
-
-  # ESPHome API Schlüssel
-  api_encryption_key: "Rd9kYjTg0g6K25ROWgl13MMdvmWYAX+8UhsvOSEDiys="
+  name: "barcode-scanner"
+  friendly_name: "Barcode Scanner"
 
   # Query ID für opentindb (https://opengtindb.org/api.php)
   rest_opentindb_queryid: "400000000"
@@ -41,6 +34,18 @@ substitutions:
   # Pin des Buzzer/Beeper
   beeper_pin: GPIO16
 
+
+esphome:
+  name: "${name}"
+  friendly_name: "${friendly_name}"
+  name_add_mac_suffix: true
+  project:
+    name: smarthomeyourself.barcode-scanner
+    version: "1.0"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
 
 esp32:
   board: wemos_d1_mini32
