@@ -47,6 +47,8 @@ api:
 wifi:
   ap:
     password: "12345678"
+    
+improv_serial:
 
 captive_portal:
 
