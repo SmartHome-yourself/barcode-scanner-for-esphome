@@ -54,6 +54,7 @@ captive_portal:
 
 logger:
   level: WARN
+  hardware_uart: UART0
 
 # ---------------------------------------------
 
