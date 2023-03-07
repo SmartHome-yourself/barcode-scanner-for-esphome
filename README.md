@@ -9,12 +9,10 @@
 #    
   
 ### ESPHome Code
-Tragt einfach den folgenden Code in euer ESPHome Projekt ein und passt die Substitution-Werte an. 
-Wer ein anderes Board als einen D1 Mini32 verwenden möchte, kann hier auch entsprechend das Board anpassen.
+Mit den folgenden optionalen Substitutions habt Ihr die Möglichkeit, die Standard-Konfiguration an Eure Bedürfnisse anzupassen.
 
 ```
 substitutions:
-  name: "barcode-scanner"
   friendly_name: "Barcode Scanner"
 
   # Query ID für opentindb (https://opengtindb.org/api.php)
@@ -28,31 +26,13 @@ substitutions:
   ssd1306_i2c_address: "0x3C"
 
   # UART-Pins für den Barcode-Scanner
-  uart_tx_pin: GPIO1
-  uart_rx_pin: GPIO3
+  uart_tx_pin: GPIO09
+  uart_rx_pin: GPIO10
 
   # Pin des Buzzer/Beeper
   beeper_pin: GPIO16
-
-
-esphome:
-  name: "${name}"
-  friendly_name: "${friendly_name}"
-  name_add_mac_suffix: true
-  project:
-    name: smarthomeyourself.barcode-scanner
-    version: "1.0"
-
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-
-esp32:
-  board: wemos_d1_mini32
-
-packages:
-  barcode: github://SmartHome-yourself/barcode-scanner-for-esphome/barcode.yaml@main
 ```
+
 
 
 *\* Bei allen Amazon Links handelt es sich um Affiliate-Links. Heißt für jeden Kauf über die Links erhalte ich eine kleine Provision. Ihr bezahlt natürlich weiterhin den selben Preis wie sonst auch. 
