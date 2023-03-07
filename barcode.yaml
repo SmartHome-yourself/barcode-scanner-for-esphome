@@ -13,8 +13,8 @@ substitutions:
   ssd1306_i2c_address: "0x3C"
 
   # UART-Pins für den Barcode-Scanner
-  uart_tx_pin: GPIO1
-  uart_rx_pin: GPIO3
+  uart_tx_pin: GPI09
+  uart_rx_pin: GPI10
 
   # Pin des Buzzer/Beeper
   beeper_pin: GPIO16
@@ -54,7 +54,6 @@ captive_portal:
 
 logger:
   level: WARN
-  baud_rate: 0
 
 # ---------------------------------------------
 
