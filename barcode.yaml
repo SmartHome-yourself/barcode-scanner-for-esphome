@@ -43,6 +43,14 @@ dashboard_import:
 ota:
 
 api:
+  services:
+    - service: request_ean
+      variables:
+        eancode: string
+      then:
+        - script.execute:
+            id: request_ean
+            ean: !lambda return eancode.c_str();
 
 wifi:
   ap:
@@ -78,16 +86,9 @@ text_sensor:
             condition:
               - lambda: 'return id(barcode_scanner).state != "unknown";'
             then:
-              - switch.turn_on: beeper
-              - delay: 50ms
-              - switch.turn_off: beeper
               - script.execute: 
-                  id: getEanData
+                  id: request_ean
                   ean: !lambda return x.c_str();
-              - delay: 500ms
-              - text_sensor.template.publish:
-                  id: barcode_scanner
-                  state: unknown
 
   - platform: template
     id: last_ean
@@ -183,6 +184,22 @@ http_request:
   id: http_request_data
   
 script:
+  - id: request_ean
+    parameters:
+      ean: std::string
+    mode: restart
+    then:
+      - switch.turn_on: beeper
+      - delay: 50ms
+      - switch.turn_off: beeper
+      - script.execute: 
+          id: getEanData
+          ean: !lambda return ean.c_str();
+      - delay: 500ms
+      - text_sensor.template.publish:
+          id: barcode_scanner
+          state: unknown
+
   - id: getEanData
     parameters:
       ean: std::string
