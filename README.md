@@ -7,6 +7,15 @@
 **Active Piezo Buzzer:** https://amzn.to/3Zps3eM *  
 **0,96" OLED Display:** https://amzn.to/3kH2Ld7 *  
 #    
+
+
+### Anleitung
+
+Die Anleitung inklusive Web-Installer findet Ihr unter folgendem Link:  
+https://smarthomeyourself.de/home-assistant-einkaufsliste-ueber-barcode-scanner-fuellen-mit-esphome/
+  
+#    
+
   
 ### ESPHome Code
 Mit den folgenden optionalen Substitutions habt Ihr die Möglichkeit, die Standard-Konfiguration an Eure Bedürfnisse anzupassen.
@@ -32,8 +41,25 @@ substitutions:
   # Pin des Buzzer/Beeper
   beeper_pin: GPIO16
 ```
+  
+#  
+  
+  
+  
+### Dienste
+**esphome.bcs_request_ean**  
+Über diesen Dienst lässt sich die gleiche Anfrage auslösen, wie wenn ein Barcode über den Scanner gescannt wird.  
+Wird der Code von den APIs erkannt, werden Hersteller und Produktname genau wie beim echten scan über die Sensoren zurückgeliefert.  
+  
+#### Parameter  
+- eancode  
+  *EAN/GTIN*  
+```
+service: esphome.bcs_request_ean
+data:
+  eancode: "40084060"
+```
 
-
-
+#### 
 *\* Bei allen Amazon Links handelt es sich um Affiliate-Links. Heißt für jeden Kauf über die Links erhalte ich eine kleine Provision. Ihr bezahlt natürlich weiterhin den selben Preis wie sonst auch. 
 Vielen Dank für eure Unterstützung!*
