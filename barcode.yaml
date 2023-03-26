@@ -178,7 +178,7 @@ switch:
     id: beeper
 
 http_request:
-  useragent: esphome/device
+  useragent: esphome/barcodescanner
   timeout: 10s
   id: http_request_data
   
@@ -200,9 +200,13 @@ script:
       - delay: 500ms
       - if:
           condition:
-            text_sensor.state:
-              id: last_product
-              state: 'null'
+            or:
+              - text_sensor.state:
+                  id: last_product
+                  state: 'null'
+              - text_sensor.state:
+                  id: last_product
+                  state: ''
           then:
             - script.execute: 
                 id: refreshProductNameOpenTin
@@ -236,6 +240,56 @@ script:
       - lambda: id(last_brand).publish_state("");
       - lambda: id(last_product).publish_state("");
       
+  - id: refreshProductNameOpenTin
+    mode: restart
+    parameters:
+      ean: std::string
+    then:
+      - http_request.get:
+          verify_ssl: false
+          url: !lambda |-
+                  return (std::string) "https://opengtindb.org/?ean=" + ean + "&cmd=query&queryid=${rest_opentindb_queryid}";
+          on_response:
+            then:
+              - lambda: |-
+                  char delimiter[] = "\n";
+                  char *ptr;
+                  ptr = strtok((char*)id(http_request_data).get_string(), delimiter);
+                  ESP_LOGD("opengtin", "ptr: %s\n", ptr);
+                  int i = 0;
+                  char *name_line = NULL;
+                  char *vendor_line = NULL;
+                  while(ptr != NULL) {
+                    if(i == 4){
+                      name_line = ptr;
+                    }
+                    if(i == 5){
+                      vendor_line = ptr;
+                    }                    
+                    ptr = strtok(NULL, delimiter);
+                    i++;
+                  }
+                  ptr = strtok(name_line, {"="});
+                  i=0;
+                  while(ptr != NULL) {
+                    if(i == 1){
+                      ESP_LOGD("opengtin", "Name: %s\n", ptr);
+                      id(last_product).publish_state(ptr);
+                    }                    
+                    ptr = strtok(NULL, delimiter);
+                    i++;
+                  }
+                  ptr = strtok(vendor_line, {"="});
+                  i=0;
+                  while(ptr != NULL) {
+                    if(i == 1){
+                      ESP_LOGD("opengtin", "Firma: %s\n", ptr);
+                      id(last_brand).publish_state(ptr);
+                    }                    
+                    ptr = strtok(NULL, delimiter);
+                    i++;
+                  }
+
   - id: refreshProductNameOpenfoodfacts
     mode: restart
     parameters:
@@ -246,7 +300,7 @@ script:
           headers:
             Content-Type: application/json          
           url: !lambda |-      
-            std::string url = "https://off:off@world.openfoodfacts.net/api/v2/search?code=" + ean + "&fields=brands,product_name,code";
+            std::string url = "https://world.openfoodfacts.org/api/v2/product/" + ean + "?fields=brands,product_name,code";
             ESP_LOGD("openFood", "API: %s\n", url.c_str());
             return url;
 
@@ -261,67 +315,9 @@ script:
                         char *ptr;
                         ptr = (char*)id(http_request_data).get_string();
                         ESP_LOGD("custom", "ptr: %s\n", ptr);
-
                         json::parse_json(ptr, [](JsonObject root) {
                           std::string jsonStr;
-                          id(last_brand).publish_state(root["products"][0]["brands"]);
-                          id(last_product).publish_state(root["products"][0]["product_name"]);
+                          id(last_brand).publish_state(root["product"]["brands"]);
+                          id(last_product).publish_state(root["product"]["product_name"]);
                         });
                   
-  - id: refreshProductNameOpenTin
-    mode: restart
-    parameters:
-      ean: std::string
-    then:
-      - http_request.get:
-          verify_ssl: false
-          url: !lambda |-
-                  return (std::string) "https://opengtindb.org/?ean=" + ean + "&cmd=query&queryid=${rest_opentindb_queryid}";
-
-          on_response:
-            then:
-              - lambda: |-
-                  char delimiter[] = "\n";
-                  char *ptr;
-
-                  ptr = strtok((char*)id(http_request_data).get_string(), delimiter);
-                  ESP_LOGD("opengtin", "ptr: %s\n", ptr);
-
-                  int i = 0;
-                  char *name_line = NULL;
-                  char *vendor_line = NULL;
-
-                  while(ptr != NULL) {
-                    if(i == 4){
-                      name_line = ptr;
-                    }
-                    if(i == 5){
-                      vendor_line = ptr;
-                    }                    
-                    ptr = strtok(NULL, delimiter);
-                    i++;
-                  }
-
-                  ptr = strtok(name_line, {"="});
-                  i=0;
-                  while(ptr != NULL) {
-                    if(i == 1){
-                      ESP_LOGD("opengtin", "Name: %s\n", ptr);
-                      id(last_product).publish_state(ptr);
-                    }                    
-                    ptr = strtok(NULL, delimiter);
-                    i++;
-                  }
-
-                  ptr = strtok(vendor_line, {"="});
-                  i=0;
-                  while(ptr != NULL) {
-                    if(i == 1){
-                      ESP_LOGD("opengtin", "Firma: %s\n", ptr);
-                      id(last_brand).publish_state(ptr);
-                    }                    
-                    ptr = strtok(NULL, delimiter);
-                    i++;
-                  }
-
-                      
