@@ -1,7 +1,7 @@
 # barcode-scanner-for-esphome
 
 #
-### Benötigte Bauteile
+## Benötigte Bauteile
 **D1 Mini-ESP32:** https://amzn.to/3kLEt1s *  
 **Barcode Scanner GM60:** https://amzn.to/3mq6vA2 *  
 **Active Piezo Buzzer:** https://amzn.to/3Zps3eM *  
@@ -9,15 +9,22 @@
 #    
 
 
-### Anleitung
+## Installation
+- ESP mit USB verbinden
+- Installieren über Web-Installer
+- WLAN Daten für über Web-Installer setzen
+- Gerät in Home Assistant adoptieren
+- Generierten Code um Substitutions anpassen
+- Über ESPHome flashen
+- In Home Assistant als Integration hinzufügen (Einstellungen - Geräte)
 
-Die Anleitung inklusive Web-Installer findet Ihr unter folgendem Link:  
+
+Den Web-Installer findet Ihr auf der Projektseite unter:  
 https://smarthomeyourself.de/home-assistant-einkaufsliste-ueber-barcode-scanner-fuellen-mit-esphome/
   
 #    
 
-  
-### ESPHome Code
+### Mögliche Einstellungen (Substitutions)
 Mit den folgenden optionalen Substitutions habt Ihr die Möglichkeit, die Standard-Konfiguration an Eure Bedürfnisse anzupassen.
 
 ```
@@ -47,18 +54,22 @@ substitutions:
   
   
 ### Dienste
-**esphome.bcs_request_ean**  
-Über diesen Dienst lässt sich die gleiche Anfrage auslösen, wie wenn ein Barcode über den Scanner gescannt wird.  
-Wird der Code von den APIs erkannt, werden Hersteller und Produktname genau wie beim echten scan über die Sensoren zurückgeliefert.  
-  
-#### Parameter  
-- eancode  
-  *EAN/GTIN*  
-```
-service: esphome.bcs_request_ean
-data:
-  eancode: "40084060"
-```
+#### esphome.[YOUR_DEVICENAME]_request_ean  
+> Über diesen Dienst lässt sich die gleiche Anfrage auslösen, wie wenn ein Barcode über den Scanner gescannt wird.  
+> Wird der Code von den APIs erkannt, werden Hersteller und Produktname genau wie beim echten scan über die Sensoren zurückgeliefert.  
+>  
+>**Parameter**
+> | Parameter | Beschreibung |
+> | --- | --- |
+> | **eancode** | *EAN/GTIN nach der gesucht werden soll* |  
+>  
+> **Beispiel:**  
+> ```
+> service: esphome.bcs_request_ean
+> data:
+>   eancode: "40084060"
+> ```
+
 
 #### 
 *\* Bei allen Amazon Links handelt es sich um Affiliate-Links. Heißt für jeden Kauf über die Links erhalte ich eine kleine Provision. Ihr bezahlt natürlich weiterhin den selben Preis wie sonst auch. 
