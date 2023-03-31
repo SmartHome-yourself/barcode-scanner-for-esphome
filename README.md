@@ -19,7 +19,7 @@
 - In Home Assistant als Integration hinzufügen (Einstellungen - Geräte)
 
 
-Den Web-Installer findet Ihr auf der Projektseite unter:  
+Den Web-Installer incl. Anleitung findet Ihr auf der Projektseite unter:  
 https://smarthomeyourself.de/home-assistant-einkaufsliste-ueber-barcode-scanner-fuellen-mit-esphome/
   
 #    
@@ -51,7 +51,19 @@ substitutions:
   
 #  
   
+### Verwendete APIs
+####  OpenFoodFacts
+Zuerst wird immer OpenFoodFacts gefragt.  
+Diese Datenbank bezieht sich rein auf Lebensmittel, liefert da aber die besseren Ergebnisse.  
+Das beste an dieser API ist, dass sie vollkommen kostenlos nutzbar ist.  
   
+#### OpengtinDB
+Für die Verwendung der OpentinDB benötigt Ihr eine eigene QueryID.  
+Ansonsten wird die öffentliche Demo-ID verwendet. Das heist Ihr teilt euch die 500 Abfragen/Tag mit allen anderen Nutzern.  
+Alle Informationen zur QueryID findet Ihr unter opengtindb.org/userid.php  
+  
+  
+
   
 ### Dienste
 #### esphome.[YOUR_DEVICENAME]_request_ean  
