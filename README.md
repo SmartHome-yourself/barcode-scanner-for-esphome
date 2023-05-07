@@ -1,6 +1,7 @@
 # barcode-scanner-for-esphome
 
 ![git-thumb](https://user-images.githubusercontent.com/705724/236686920-aefc9c7b-0104-46ff-8f4c-45027e6fa1a7.jpg)
+[<img src="https://user-images.githubusercontent.com/705724/236687065-3938ffdd-424e-44a6-9bef-6b1bdbaff480.png" width="300px">](https://esphome.io/guides/made_for_esphome.html)
 
 #
 ## Benötigte Bauteile
@@ -65,9 +66,9 @@ Ansonsten wird die öffentliche Demo-ID verwendet. Das heist Ihr teilt euch die 
 Alle Informationen zur QueryID findet Ihr unter opengtindb.org/userid.php  
   
   
-
-  
-### Dienste
+&nbsp;    
+   
+## Dienste
 #### esphome.[YOUR_DEVICENAME]_request_ean  
 > Über diesen Dienst lässt sich die gleiche Anfrage auslösen, wie wenn ein Barcode über den Scanner gescannt wird.  
 > Wird der Code von den APIs erkannt, werden Hersteller und Produktname genau wie beim echten scan über die Sensoren zurückgeliefert.  
