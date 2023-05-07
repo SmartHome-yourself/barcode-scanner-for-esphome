@@ -1,5 +1,7 @@
 # barcode-scanner-for-esphome
 
+![git-thumb](https://user-images.githubusercontent.com/705724/236686920-aefc9c7b-0104-46ff-8f4c-45027e6fa1a7.jpg)
+
 #
 ## Benötigte Bauteile
 **D1 Mini-ESP32:** https://amzn.to/3kLEt1s *  
