@@ -37,7 +37,7 @@ Alle Informationen zur QueryID findet Ihr unter opengtindb.org/userid.php
 #    
   
 ## Platine
-Die Platine könnt Ihr wie immer bei PCBWay bestellen.
+Die Platine könnt Ihr wie immer bei PCBWay bestellen.  
 ![image](https://github.com/SmartHome-yourself/barcode-scanner-for-esphome/assets/705724/773939a7-0420-4d92-8613-689225beb13c)
 https://www.pcbway.com/project/shareproject/Barcode_scanner_made_for_ESPHome_bb9bba9a.html  
 #  
