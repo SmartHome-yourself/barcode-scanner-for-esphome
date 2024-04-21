@@ -46,9 +46,10 @@ https://www.pcbway.com/project/shareproject/Barcode_scanner_made_for_ESPHome_bb9
 ## Installation
 - ESP mit USB verbinden
 - Installieren über Web-Installer
-- WLAN Daten für über Web-Installer setzen
+- WLAN Daten über Web-Installer setzen
 - Gerät in Home Assistant adoptieren
 - Generierten Code um Substitutions anpassen
+- arial.ttf in /HomeAssistant/esphome/_fonts/ ablegen
 - Über ESPHome flashen
 - In Home Assistant als Integration hinzufügen (Einstellungen - Geräte)
 
