@@ -186,7 +186,6 @@ http_request:
   useragent: esphome/barcodescanner
   timeout: 10s
   id: http_request_data
-  verify_ssl: false
   
 script:
   - id: request_ean
