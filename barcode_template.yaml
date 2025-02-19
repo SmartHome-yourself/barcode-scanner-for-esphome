@@ -19,5 +19,10 @@ substitutions:
   # Pin des Buzzer/Beeper
   beeper_pin: GPIO16
 
+external_components:
+  - source: github://esphome/esphome@2024.5.5
+    components: [ http_request, json ]
+
 packages:
-  barcode: github://SmartHome-yourself/barcode-scanner-for-esphome/barcode.yaml@main
+  barcode: github://clarrazet/barcode-scanner-for-esphome/barcode.yaml@main
+  
