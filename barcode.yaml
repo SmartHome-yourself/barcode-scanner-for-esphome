@@ -44,6 +44,9 @@ ota:
   - platform: esphome
 
 api:
+  encryption:
+    key: !secret barcode-scanner-api-key
+
   services:
     - service: request_ean
       variables:
