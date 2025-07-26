@@ -128,8 +128,7 @@ font:
   - file: "_fonts/arial.ttf"
     id: arial_font
     size: 20
-    glyphs:  |
-      ß!?"%()+*=,-_.:°ø0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÜÖ abcdefghijklmnopqrstuvwxyzäüö€@<>/
+    glyphs: ß!?"%()+*=,-_.:°ø0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÄÜÖ abcdefghijklmnopqrstuvwxyzäüö€@<>/
 
 i2c:
   sda: "${display_i2c_sda}"
