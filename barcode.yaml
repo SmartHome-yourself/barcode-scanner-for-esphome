@@ -264,7 +264,6 @@ script:
       ean: std::string
     then:
       - http_request.get:
-          verify_ssl: false
           url: !lambda |-
                   return (std::string) "https://opengtindb.org/?ean=" + ean + "&cmd=query&queryid=${rest_opentindb_queryid}";
           on_response:
@@ -314,7 +313,6 @@ script:
       ean: std::string
     then:
       - http_request.get:
-          verify_ssl: false
           headers:
             Content-Type: application/json          
           url: !lambda |-      
